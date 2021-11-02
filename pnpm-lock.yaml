@@ -3,7 +3,6 @@ lockfileVersion: 5.3
 specifiers:
   '@types/decompress': ^4.2.4
   '@types/mkdirp': ^1.0.2
-  '@types/tar': ^6.1.0
   axios: ^0.24.0
   decompress: ^4.2.1
   esbuild: ^0.13.12
@@ -17,19 +16,12 @@ dependencies:
 devDependencies:
   '@types/decompress': 4.2.4
   '@types/mkdirp': 1.0.2
-  '@types/tar': 6.1.0
   esbuild: 0.13.12
 
 packages:
 
   /@types/decompress/4.2.4:
     resolution: {integrity: sha512-/C8kTMRTNiNuWGl5nEyKbPiMv6HA+0RbEXzFhFBEzASM6+oa4tJro9b8nj7eRlOFfuLdzUU+DS/GPDlvvzMOhA==}
-    dependencies:
-      '@types/node': 16.11.6
-    dev: true
-
-  /@types/minipass/3.1.0:
-    resolution: {integrity: sha512-b2yPKwCrB8x9SB65kcCistMoe3wrYnxxt5rJSZ1kprw0uOXvhuKi9kTQ746Y+Pbqoh+9C0N4zt0ztmTnG9yg7A==}
     dependencies:
       '@types/node': 16.11.6
     dev: true
@@ -42,13 +34,6 @@ packages:
 
   /@types/node/16.11.6:
     resolution: {integrity: sha512-ua7PgUoeQFjmWPcoo9khiPum3Pd60k4/2ZGXt18sm2Slk0W0xZTqt5Y0Ny1NyBiN1EVQ/+FaF9NcY4Qe6rwk5w==}
-    dev: true
-
-  /@types/tar/6.1.0:
-    resolution: {integrity: sha512-uTZKMW7ZkdTJXX4+Bsp0ko9N7B5/NJ5wJRW14XTb6KNN+9i2NPel6iPKp8rTQahMW46BM9tM52dTeMSldB55og==}
-    dependencies:
-      '@types/minipass': 3.1.0
-      '@types/node': 16.11.6
     dev: true
 
   /axios/0.24.0:
