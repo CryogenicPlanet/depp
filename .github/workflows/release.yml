@@ -38,5 +38,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
       - uses: pnpm/action-setup@v1.2.1
+        with:
+          version: 5.17.2
+          run_install: true
       - run: pnpm publish
 
