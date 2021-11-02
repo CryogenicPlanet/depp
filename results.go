@@ -31,6 +31,7 @@ func checkIgnoredNameSpace(module string) bool {
 }
 
 func computeResults() {
+
 	count := 0
 	unused := 0
 	unusedPackages := []string{}
@@ -40,6 +41,10 @@ func computeResults() {
 	for key, val := range deps {
 
 		if checkIgnoredNameSpace(key) {
+			continue
+		}
+
+		if checkTypePackage(key) {
 			continue
 		}
 
@@ -70,6 +75,8 @@ func computeResults() {
 
 	duplicatesDiffVersions, duplicatesSameVersion := findDuplicates()
 
+	unusedTypePackage := checkAtTypesPackages()
+
 	if len(duplicatesSameVersion) > 0 || len(duplicatesDiffVersions) > 0 {
 		if len(duplicatesSameVersion) > 0 {
 
@@ -85,6 +92,8 @@ func computeResults() {
 	} else {
 		green.Println("There are no duplicate packages")
 	}
+
+	unusedTypesPackagesMarkdownTable(unusedTypePackage)
 
 }
 
@@ -133,95 +142,101 @@ var reportWg sync.WaitGroup
 
 // Log to generate report file
 func reportLog(a ...interface{}) {
-	if report {
-		str := fmt.Sprint(a...)
-		reportWg.Add(1)
-		reportLines <- str
-	}
+	str := fmt.Sprint(a...)
+	reportWg.Add(1)
+	reportLines <- str
 
 }
 
 func unusedPackageMarkdownTable(packages []string) {
-	reportLog("## Unused packages \n")
-	for _, val := range packages {
-		reportLog("- [] ", val)
+	if len(packages) > 0 {
+		reportLog("## Unused packages \n")
+		for _, val := range packages {
+			reportLog("- [] ", val)
+		}
+		reportLog("\n---")
 	}
-	reportLog("\n---")
 }
 
 func multipleVersionsMarkdownTable(packages []string, packageVersions [][]string) {
-	reportLog("### Packages with Multiple Versions")
-	reportLog("| Package  | Version | Used By")
-	reportLog("| ----------- | ----------- | ----------- |")
-	for i := range packages {
-		name := packages[i]
-		versions := packageVersions[i]
-		reportLog("| ", name, " | `", strings.Join(versions, ","), "` | `", strings.Join(depsName[name], ", "), "` | ")
+	if len(packages) > 0 {
+		reportLog("### Packages with Multiple Versions")
+		reportLog("| Package  | Version | Used By")
+		reportLog("| ----------- | ----------- | ----------- |")
+		for i := range packages {
+			name := packages[i]
+			versions := packageVersions[i]
+			reportLog("| ", name, " | `", strings.Join(versions, ","), "` | `", strings.Join(depsName[name], ", "), "` | ")
+		}
+		reportLog("---")
 	}
-	reportLog("---")
 }
 
 func sameVersionMarkdownTable(packages []string) {
-	reportLog("### Packages with Same Versions")
-	reportLog("| Package  | Used By |")
-	reportLog("| ----------- | ----------- |")
-	for _, val := range packages {
-		reportLog("| ", val, " | `", strings.Join(depsName[val], ", "), "` | ")
+	if len(packages) > 0 {
+		reportLog("### Packages with Same Versions")
+		reportLog("| Package  | Used By |")
+		reportLog("| ----------- | ----------- |")
+		for _, val := range packages {
+			reportLog("| ", val, " | `", strings.Join(depsName[val], ", "), "` | ")
+		}
+		reportLog("---")
 	}
-	reportLog("---")
 }
 
 func generateReport() {
 
-	if report {
-		// open output file
-		fo, err := os.Create(DEPCHECK_DIR + "/report.md")
-		fileOps.Add(1)
-		if err != nil {
-			panic(err)
-		}
-		// close fo on exit and check for its returned error
-
-		datawriter := bufio.NewWriter(fo)
-
-		for line := range reportLines {
-			// fmt.Println("Writing", line, "to report")
-			_, err := datawriter.WriteString(line + "\n")
-			check(err)
-			reportWg.Done()
-		}
-
-		err = datawriter.Flush()
-		check(err)
-		err = fo.Close()
-		check(err)
-		fileOps.Done()
+	// open output file
+	fo, err := os.Create(DEPCHECK_DIR + "/report.md")
+	fileOps.Add(1)
+	if err != nil {
+		panic(err)
 	}
+	// close fo on exit and check for its returned error
+
+	datawriter := bufio.NewWriter(fo)
+
+	for line := range reportLines {
+		// fmt.Println("Writing", line, "to report")
+		_, err := datawriter.WriteString(line + "\n")
+		check(err)
+		reportWg.Done()
+	}
+
+	err = datawriter.Flush()
+	check(err)
+	err = fo.Close()
+	check(err)
+	fileOps.Done()
+
 }
 
 func openHtml() {
-	md, err := ioutil.ReadFile(DEPCHECK_DIR + "/report.md")
+	if !noOpen {
+		md, err := ioutil.ReadFile(DEPCHECK_DIR + "/report.md")
 
-	if err != nil {
-		fmt.Println("Previous report not found, please generate a report")
-		os.Exit(1)
+		if err != nil {
+			fmt.Println("Previous report not found, please generate a report")
+			os.Exit(1)
+		}
+
+		reader := bytes.NewReader(md)
+
+		// err := os.WriteFile(DEPCHECK_DIR+"/report.html", output, 0644)
+
+		// if err != nil {
+		// 	panic(err)
+		// }
+
+		opnr := mdopen.New()
+		if err := opnr.Open(reader); err != nil {
+			log.Fatal(err)
+		}
+		// err = browser.OpenURL(DEPCHECK_DIR + "/report.html")
+
+		// if err != nil {
+		// 	panic(err)
+		// }
 	}
 
-	reader := bytes.NewReader(md)
-
-	// err := os.WriteFile(DEPCHECK_DIR+"/report.html", output, 0644)
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	opnr := mdopen.New()
-	if err := opnr.Open(reader); err != nil {
-		log.Fatal(err)
-	}
-	// err = browser.OpenURL(DEPCHECK_DIR + "/report.html")
-
-	// if err != nil {
-	// 	panic(err)
-	// }
 }

@@ -25,25 +25,27 @@ func fileLog(a ...interface{}) {
 }
 
 func createDirectory() {
-	if logging || report || esbuildWrite {
-		if _, err := os.Stat(DEPCHECK_DIR); os.IsNotExist(err) {
 
-			err := os.Mkdir(DEPCHECK_DIR, 0755)
-			if err != nil {
-				panic(err)
-			}
+	if _, err := os.Stat(DEPCHECK_DIR); os.IsNotExist(err) {
+
+		err := os.Mkdir(DEPCHECK_DIR, 0755)
+		if err != nil {
+			panic(err)
 		}
 	}
+
 }
 
-func removeDirectory() {
+func removeDirectory(noLog bool) {
 	if _, err := os.Stat(DEPCHECK_DIR); !os.IsNotExist(err) {
 		// path/to/whatever exists
 		err := os.RemoveAll(DEPCHECK_DIR)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("Cleaned!")
+		if !noLog {
+			fmt.Println("Cleaned!")
+		}
 	} else {
 		fmt.Println("Nothing to clean")
 	}

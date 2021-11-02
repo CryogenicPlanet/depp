@@ -16,7 +16,7 @@ Just run `depp` in your project folder and it will do the rest. Keep in mind it 
 
 All options
 ```
-➜ depp --help
+➜ depp --help  
 NAME:
    depp - Find un used packages fast
 
@@ -39,8 +39,8 @@ GLOBAL OPTIONS:
    --write-output-files, -w              This will write the esbuild output files. (default: false)
    --externals value, -e value           Pass custom externals using this flag
    --ignore-namespace value, --in value  Pass namespace (@monorepo) to be ignored
+   --no-open, --no                       Flag to prevent auto opening report in browser (default: false)
    --help, -h                            show help (default: false)
-
 ```
 
 ### Example Advanced usage
