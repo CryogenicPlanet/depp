@@ -9,7 +9,7 @@ on:
 
 
 jobs:
-  build:
+  release-go:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,6 +28,14 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release-npm:
+    needs: release-go
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup node
         uses: actions/setup-node@v1
         with:
@@ -41,10 +49,9 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
-      - uses: pnpm/action-setup@v1.2.1
-        with:
-          version: 6.7.1
-          run_install: true
+      - name: Install pnpm
+        run: curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
+      - run: pnpm install
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
