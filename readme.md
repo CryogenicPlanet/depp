@@ -5,18 +5,18 @@
 ## Installation
 
 ```
-npm install -g depp
-# or using npx directly
-npx depp
+npm install -g depp-installer (will try to get npm install -g depp later)
 ```
 
 ## Usage
 
-Just run `depp` in your project folder and it will do the rest
+Just run `depp` in your project folder and it will do the rest. Keep in mind it will likely fail without setting some externals
 
-Additional options
+**Note if you want it to work with JS** please use `-j` or `--js` by default it will do only `.ts|.tsx` files
+
+All options
 ```
-➜ depp --help                                                                                                                                  
+➜ depp --help
 NAME:
    depp - Find un used packages fast
 
@@ -25,6 +25,7 @@ USAGE:
 
 COMMANDS:
    clean    Cleans all output files
+   show     Shows previous report
    help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
@@ -39,7 +40,17 @@ GLOBAL OPTIONS:
    --externals value, -e value           Pass custom externals using this flag
    --ignore-namespace value, --in value  Pass namespace (@monorepo) to be ignored
    --help, -h                            show help (default: false)
+
 ```
+
+### Example Advanced usage
+
+This is an example of advanced usage of the script with `externals` and `ignore-namespace`
+
+```
+depp -v -j -e mobx -e magic-sdk -e domain -e @daybrush/utils -e yjs -e constants -e ws  -e perf_hooks -in @editor -in @server   --report
+```
+
 
 ## Why use this
 
@@ -52,5 +63,6 @@ This is not been extensively tested and might have some short comings, it may no
 
 
 ## Acknowledgement
+
 
 This is built upon the excellent work down by [@evanw](https://github.com/evanw/) on `esbuild` and uses `esbuild` under the hood
