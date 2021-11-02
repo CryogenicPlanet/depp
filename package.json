@@ -1,0 +1,37 @@
+{
+  "name": "depp-installer",
+  "version": "0.0.1",
+  "description": " A fast unused and duplicate dependency checker ",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CryogenicPlanet/depp.git"
+  },
+  "keywords": [
+    "usused",
+    "depedency",
+    "checker",
+    "duplicate"
+  ],
+  "author": "Rahul Tarak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CryogenicPlanet/depp/issues"
+  },
+  "homepage": "https://github.com/CryogenicPlanet/depp#readme",
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js install",
+    "preuninstall": "node scripts/postinstall.js uninstall"
+  },
+  "goBinary": {
+    "name": "depp",
+    "path": "./bin"
+  },
+  "files": [
+    "dist",
+    "scripts/postinstall.js"
+  ],
+  "main": "scripts/postinstall.js",
+  "dependencies": {
+    "mkdirp": "^1.0.4"
+  }
+}

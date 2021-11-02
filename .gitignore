@@ -1,4 +1,4 @@
 test/
 depCheckDist
-
+node_modules
 dist/
