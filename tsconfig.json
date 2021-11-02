@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+      "declaration": false,
+      "noImplicitAny": false,
+      "removeComments": true,
+      "noLib": false,
+      "target": "ES2016",
+      "sourceMap": true,
+      "module": "commonjs",
+      "jsx": "preserve",
+      "strict": true,
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true,
+      "lib": ["dom", "dom.iterable", "esnext", "WebWorker", "es2019"],
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "isolatedModules": true,
+      "baseUrl": ".",
+      "allowJs": true,
+      "noEmit": true
+    },
+    
+    "include": [
+      "scripts/*"
+    ]
+  }
+  

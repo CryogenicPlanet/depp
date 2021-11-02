@@ -7,8 +7,8 @@
     "url": "git+https://github.com/CryogenicPlanet/depp.git"
   },
   "keywords": [
-    "usused",
-    "depedency",
+    "unused",
+    "dependency",
     "checker",
     "duplicate"
   ],
@@ -19,19 +19,28 @@
   },
   "homepage": "https://github.com/CryogenicPlanet/depp#readme",
   "scripts": {
-    "postinstall": "node scripts/postinstall.js install",
-    "preuninstall": "node scripts/postinstall.js uninstall"
+    "postinstall": "node dist/postinstall.js install",
+    "preuninstall": "node dist/postinstall.js uninstall",
+    "build": "esbuild scripts/postinstall.ts --outfile=dist/postinstall.js --platform=node --format=cjs",
+    "prepare": "pnpm build"
   },
   "goBinary": {
     "name": "depp",
     "path": "./bin"
   },
   "files": [
-    "dist",
-    "scripts/postinstall.js"
+    "dist/postinstall.js"
   ],
   "main": "scripts/postinstall.js",
   "dependencies": {
+    "axios": "^0.24.0",
+    "decompress": "^4.2.1",
     "mkdirp": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/decompress": "^4.2.4",
+    "@types/mkdirp": "^1.0.2",
+    "@types/tar": "^6.1.0",
+    "esbuild": "^0.13.12"
   }
 }
