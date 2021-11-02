@@ -133,10 +133,11 @@ var reportWg sync.WaitGroup
 
 // Log to generate report file
 func reportLog(a ...interface{}) {
-	str := fmt.Sprint(a...)
-	// fmt.Println("Adding to log queue")
-	reportWg.Add(1)
-	reportLines <- str
+	if report {
+		str := fmt.Sprint(a...)
+		reportWg.Add(1)
+		reportLines <- str
+	}
 
 }
 
@@ -171,8 +172,8 @@ func sameVersionMarkdownTable(packages []string) {
 }
 
 func generateReport() {
-	if report {
 
+	if report {
 		// open output file
 		fo, err := os.Create(DEPCHECK_DIR + "/report.md")
 		fileOps.Add(1)
@@ -195,11 +196,6 @@ func generateReport() {
 		err = fo.Close()
 		check(err)
 		fileOps.Done()
-	} else {
-		for line := range logs {
-			fmt.Sprintln(line) // Just ignore this line
-			reportWg.Done()
-		}
 	}
 }
 

@@ -211,7 +211,13 @@ func getFiles(path string) []string {
 	tsFiles, err := Glob(path + "**/*.ts*")
 
 	for _, file := range tsFiles {
-		if !strings.Contains(file, ".d.ts") {
+
+		ext := filepath.Ext(file)
+
+		// The ext check prevents .ts.snap or ts.anything files\
+		// By default we will check .test.ts files
+		// TODO Add a flag for ignored directories later
+		if !strings.Contains(file, ".d.ts") && (ext == ".ts" || ext == ".tsx") {
 			files = append(files, file)
 		}
 	}
@@ -419,6 +425,7 @@ func depcheck() {
 	result := api.Build(api.BuildOptions{
 		EntryPoints: sourcePaths,
 		// EntryPoints: []string{"test/monorepo/packages/package-b/src/App.tsx"},
+		Target:   api.ES2016,
 		Bundle:   true,
 		Write:    esbuildWrite,
 		Format:   api.FormatESModule,
