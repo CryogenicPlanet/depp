@@ -28,6 +28,10 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
       - name: Cache pnpm modules
         uses: actions/cache@v2
         env:
@@ -41,5 +45,7 @@ jobs:
         with:
           version: 6.7.1
           run_install: true
-      - run: pnpm publish
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
