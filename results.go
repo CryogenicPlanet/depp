@@ -2,15 +2,16 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"strings"
 	"sync"
 
 	"github.com/fatih/color"
-	"github.com/gomarkdown/markdown"
-	"github.com/pkg/browser"
+	"github.com/romanyx/mdopen"
 )
 
 var report bool
@@ -140,33 +141,31 @@ func reportLog(a ...interface{}) {
 }
 
 func unusedPackageMarkdownTable(packages []string) {
-	reportLog("## Unused packages")
-	reportLog("| Package  |")
-	reportLog("| ----------- |")
+	reportLog("## Unused packages \n")
 	for _, val := range packages {
-		reportLog("| ", val, " |")
+		reportLog("- [] ", val)
 	}
-	reportLog("---")
+	reportLog("\n---")
 }
 
 func multipleVersionsMarkdownTable(packages []string, packageVersions [][]string) {
 	reportLog("### Packages with Multiple Versions")
-	reportLog("| Package  | Version |")
-	reportLog("| ----------- | ----------- |")
+	reportLog("| Package  | Version | Used By")
+	reportLog("| ----------- | ----------- | ----------- |")
 	for i := range packages {
 		name := packages[i]
 		versions := packageVersions[i]
-		reportLog("| ", name, " | `", strings.Join(versions, ","), "` | ")
+		reportLog("| ", name, " | `", strings.Join(versions, ","), "` | `", strings.Join(depsName[name], ", "), "` | ")
 	}
 	reportLog("---")
 }
 
 func sameVersionMarkdownTable(packages []string) {
 	reportLog("### Packages with Same Versions")
-	reportLog("| Package  |")
-	reportLog("| ----------- |")
+	reportLog("| Package  | Used By |")
+	reportLog("| ----------- | ----------- |")
 	for _, val := range packages {
-		reportLog("| ", val, " |")
+		reportLog("| ", val, " | `", strings.Join(depsName[val], ", "), "` | ")
 	}
 	reportLog("---")
 }
@@ -205,19 +204,28 @@ func generateReport() {
 }
 
 func openHtml() {
-	md, _ := ioutil.ReadFile(DEPCHECK_DIR + "/report.md")
-
-	output := markdown.ToHTML(md, nil, nil)
-
-	err := os.WriteFile(DEPCHECK_DIR+"/report.html", output, 0644)
+	md, err := ioutil.ReadFile(DEPCHECK_DIR + "/report.md")
 
 	if err != nil {
-		panic(err)
+		fmt.Println("Previous report not found, please generate a report")
+		os.Exit(1)
 	}
 
-	err = browser.OpenURL(DEPCHECK_DIR + "/report.html")
+	reader := bytes.NewReader(md)
 
-	if err != nil {
-		panic(err)
+	// err := os.WriteFile(DEPCHECK_DIR+"/report.html", output, 0644)
+
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	opnr := mdopen.New()
+	if err := opnr.Open(reader); err != nil {
+		log.Fatal(err)
 	}
+	// err = browser.OpenURL(DEPCHECK_DIR + "/report.html")
+
+	// if err != nil {
+	// 	panic(err)
+	// }
 }

@@ -17,6 +17,7 @@ import (
 )
 
 type PackageJSON struct {
+	Name            string            `json: "name, omitempty"`
 	Dependencies    map[string]string `json: "dependencies, omitempty"`
 	DevDependencies map[string]string `json "devDependencies, omitempty"`
 }
@@ -257,6 +258,7 @@ func readJson(path string) PackageJSON {
 }
 
 var deps = make(map[string]bool)
+var depsName = make(map[string][]string)
 var versions = make(map[string][]string)
 
 func setDeps(paths []string) {
@@ -265,6 +267,12 @@ func setDeps(paths []string) {
 
 		for key, version := range packageJson.Dependencies {
 			deps[key] = false
+
+			if _, ok := depsName[key]; ok {
+				depsName[key] = append(depsName[key], packageJson.Name)
+			} else {
+				depsName[key] = []string{packageJson.Name}
+			}
 
 			if _, ok := versions[key]; ok {
 				versions[key] = append(versions[key], version)
@@ -282,6 +290,12 @@ func setDeps(paths []string) {
 				versions[key] = append(versions[key], version)
 			} else {
 				versions[key] = []string{version}
+			}
+
+			if _, ok := depsName[key]; ok {
+				depsName[key] = append(depsName[key], packageJson.Name)
+			} else {
+				depsName[key] = []string{packageJson.Name}
 			}
 		}
 
@@ -529,6 +543,14 @@ func main() {
 				Usage: "Cleans all output files",
 				Action: func(c *cli.Context) error {
 					removeDirectory()
+					return nil
+				},
+			},
+			{
+				Name:  "show",
+				Usage: "Shows previous report",
+				Action: func(c *cli.Context) error {
+					openHtml()
 					return nil
 				},
 			},

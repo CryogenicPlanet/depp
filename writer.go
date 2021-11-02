@@ -11,7 +11,7 @@ var logs = make(chan string, 100)
 
 var logging bool
 
-const DEPCHECK_DIR = "depCheck"
+const DEPCHECK_DIR = ".depp"
 
 var loggerWg sync.WaitGroup
 
