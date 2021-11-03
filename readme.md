@@ -9,7 +9,7 @@
 npm install -g depp-installer (will try to get npm install -g depp later)
 
 ## Go
-go install github.com/CryogenicPlanet/depp@latest
+go install github.com/cryogenicplanet/depp@latest
 
 ```
 

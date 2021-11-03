@@ -1,6 +1,6 @@
 {
   "name": "depp-installer",
-  "version": "0.0.1-g",
+  "version": "0.0.2",
   "description": " A fast unused and duplicate dependency checker ",
   "repository": {
     "type": "git",
