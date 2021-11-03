@@ -1,4 +1,4 @@
-# Depp - A fast unused and duplicate package checker
+# Depp - A fast unused and duplicate package checker [![Go Reference](https://pkg.go.dev/badge/github.com/CryogenicPlanet/depp.svg)](https://pkg.go.dev/github.com/CryogenicPlanet/depp)
 
 ![](https://user-images.githubusercontent.com/10355479/139758905-7f911615-84d0-46c6-805a-06f8eafaf633.png)
 
