@@ -29,7 +29,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release-npm:
-    needs: release-go
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -52,7 +51,20 @@ jobs:
       - name: Install pnpm
         run: curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
       - run: pnpm install --ignore-scripts
-      - run: npm publish
+      - run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+  test-installer:
+      if: ${{ always() }} # Will run even if one of the releases fails, This is really for testing purposes cause release-go can't release twice
+      needs: [release-npm, release-go]
+      runs-on: ${{ matrix.os }}
+      strategy:
+          matrix:
+            os: [macos-latest, ubuntu-latest, windows-latest]
+      steps:
+        - name: Install Node.js, NPM and Yarn
+          uses: actions/setup-node@v1
+          with:
+            node-version: 14
+        - run: npm install -g depp-installer
+        - run: depp --help
