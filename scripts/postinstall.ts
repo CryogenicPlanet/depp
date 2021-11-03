@@ -140,7 +140,7 @@ function parsePackageJson() {
 
 type ErrCallback = (_err: Error | null) => void;
 
-async function downloadAndInstall(url: string, outPath: string) {
+async function downloadAndInstall(url: string, outPath: string, binName:string) {
   const tempPath = fs.mkdtempSync("depp");
 
   const { data } = await axios({
@@ -160,7 +160,7 @@ async function downloadAndInstall(url: string, outPath: string) {
       console.log("Unpacked tarball");
       await decompress(tarballPath, `${tempPath}/tar`);
       fs.renameSync(
-        path.resolve(`${tempPath}/tar/depp`),
+        path.resolve(`${tempPath}/tar/${binName}`),
         path.resolve(outPath)
       );
       console.log("Wrote binary to out path", outPath);
@@ -195,7 +195,7 @@ async function install(callback: ErrCallback) {
 
   console.log("Downloading binary from", url);
 
-  await downloadAndInstall(url, `${opts.binPath}/${opts.binName}`);
+  await downloadAndInstall(url, `${opts.binPath}/${opts.binName}`, opts.binName);
 
   //   await execShellCommand(`cp ${src} ${opts.binPath}/${opts.binName}`);
   //   await execShellCommand(`cp ${src} ${opts.binPath}/${opts.binName}`);
