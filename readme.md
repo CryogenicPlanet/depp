@@ -51,6 +51,10 @@ This is an example of advanced usage of the script with `externals` and `ignore-
 depp -v -j -e mobx -e magic-sdk -e domain -e @daybrush/utils -e yjs -e constants -e ws  -e perf_hooks -in @editor -in @server   --report
 ```
 
+## Example Outputs
+
+1. [Markdown](./static/markdownReport.md)
+2. [Html](https://cryogenicplanet.github.io/depp/static/htmlReport.html)
 
 ## Why use this
 
