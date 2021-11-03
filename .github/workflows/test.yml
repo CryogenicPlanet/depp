@@ -6,7 +6,6 @@ on:
 
 jobs:
    test-installer:
-      needs: release-npm
       runs-on: ${{ matrix.os }}
       strategy:
           matrix:
