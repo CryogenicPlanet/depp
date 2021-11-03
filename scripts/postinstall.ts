@@ -16,6 +16,7 @@ const ARCH_MAPPING: { [name: string]: string } = {
   arm: "arm",
 };
 
+
 // Mapping between Node's `process.platform` to Golang's
 const PLATFORM_MAPPING: { [name: string]: string } = {
   darwin: "darwin",
@@ -190,7 +191,7 @@ async function install(callback: ErrCallback) {
   const platform = PLATFORM_MAPPING[process.platform];
   const arch = ARCH_MAPPING[process.arch];
 
-  const url = `https://github.com/CryogenicPlanet/depp/releases/download/v${opts.version}/${opts.binName}_${opts.version}_${platform}_${arch}.tar.gz`;
+  const url = `https://github.com/CryogenicPlanet/depp/releases/download/v${opts.version}/depp_${opts.version}_${platform}_${arch}.tar.gz`;
 
   console.log("Downloading binary from", url);
 
