@@ -225,7 +225,7 @@ func getFiles(path string) []string {
 		fmt.Println("Error Reading file paths from glob", err)
 	}
 
-	if jsSource {
+	if globalConfig.JS {
 
 		jsFiles, err := Glob(path + "**/*.js")
 
@@ -289,7 +289,7 @@ func setDeps(paths []string) {
 
 		for key, version := range packageJson.DevDependencies {
 
-			if devDep {
+			if globalConfig.DevDependencies {
 				deps[key] = false
 			} else {
 				if checkTypePackage(key) {
@@ -312,8 +312,6 @@ func setDeps(paths []string) {
 	}
 }
 
-var overwriteRootPath string
-
 var overwriteSource string
 
 func depcheck() {
@@ -333,8 +331,8 @@ func depcheck() {
 		fmt.Println(err)
 	}
 
-	if overwriteRootPath != "" {
-		rootPath = overwriteRootPath
+	if globalConfig.Path != "" {
+		rootPath = globalConfig.Path
 	}
 
 	fmt.Println("Root path:", rootPath)
@@ -393,15 +391,17 @@ func depcheck() {
 
 	// Auto deletes the folder by default
 	// The folder is used to create the html report everytime
-	if !logging && !report && !esbuildWrite {
+	if !globalConfig.Log && !globalConfig.Report && !esbuildWrite && !hasConfig && !saveConfig {
 		removeDirectory(true)
+	}
+
+	if saveConfig {
+		writeConfig(globalConfig)
 	}
 
 	close(modules)
 }
 
-var devDep bool
-var jsSource bool
 var esbuildWrite bool
 var noOpen bool
 
@@ -409,106 +409,7 @@ var externals cli.StringSlice
 var ignoreNameSpaces cli.StringSlice
 
 func main() {
-	app := &cli.App{
-		Name:  "depp",
-		Usage: "Find un used packages fast",
-		Flags: []cli.Flag{
-			&cli.BoolFlag{
-				Name:        "dev",
-				Aliases:     []string{"d"},
-				Usage:       "Enable dev dependencies",
-				Destination: &devDep,
-			},
-			&cli.BoolFlag{
-				Name:        "js",
-				Aliases:     []string{"j"},
-				Usage:       "Enable js source files",
-				Destination: &jsSource,
-			},
-			&cli.PathFlag{
-				Name:        "path",
-				Aliases:     []string{"p"},
-				Usage:       "Overwrite root directory",
-				Destination: &overwriteRootPath,
-			},
-			&cli.BoolFlag{
-				Name:        "log",
-				Aliases:     []string{"l"},
-				Usage:       "Will write logs to .depcheck.log",
-				Value:       false,
-				Destination: &logging,
-			},
-			&cli.StringFlag{
-				Name:        "source",
-				Aliases:     []string{"s"},
-				Usage:       "Overwrite default sources",
-				Destination: &overwriteSource,
-			},
-			&cli.BoolFlag{
-				Name:        "report",
-				Aliases:     []string{"r"},
-				Usage:       "Generate report file",
-				Value:       false,
-				Destination: &report,
-			},
-			&cli.BoolFlag{
-				Name:        "show-versions",
-				Aliases:     []string{"v"},
-				Usage:       "Show conflicting versions",
-				Value:       false,
-				Destination: &showVersions,
-			},
-			&cli.BoolFlag{
-				Name:        "write-output-files",
-				Aliases:     []string{"w"},
-				Usage:       "This will write the esbuild output files.",
-				Value:       false,
-				Destination: &esbuildWrite,
-			},
-			&cli.StringSliceFlag{
-				Name:        "externals",
-				Aliases:     []string{"e"},
-				Usage:       "Pass custom externals using this flag",
-				Destination: &externals,
-			},
-			&cli.StringSliceFlag{
-				Name:        "ignore-namespace",
-				Aliases:     []string{"in"},
-				Usage:       "Pass namespace (@monorepo) to be ignored",
-				Destination: &ignoreNameSpaces,
-			},
-			&cli.BoolFlag{
-				Name:        "no-open",
-				Aliases:     []string{"no"},
-				Usage:       "Flag to prevent auto opening report in browser",
-				Value:       false,
-				Destination: &noOpen,
-			},
-		},
-		Action: func(c *cli.Context) error {
-			depcheck()
-
-			return nil
-		},
-		Commands: []*cli.Command{
-			{
-				Name:  "clean",
-				Usage: "Cleans all output files",
-				Action: func(c *cli.Context) error {
-					removeDirectory(false)
-					return nil
-				},
-			},
-			{
-				Name:  "show",
-				Usage: "Shows previous report",
-				Action: func(c *cli.Context) error {
-					openHtml()
-					return nil
-				},
-			},
-		},
-	}
+	app := createCliApp()
 
 	err := app.Run(os.Args)
 	if err != nil {

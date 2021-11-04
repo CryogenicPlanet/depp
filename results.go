@@ -14,9 +14,6 @@ import (
 	"github.com/romanyx/mdopen"
 )
 
-var report bool
-var showVersions bool
-
 func checkIgnoredNameSpace(module string) bool {
 	namespaces := ignoreNameSpaces.Value()
 
@@ -116,7 +113,7 @@ func findDuplicates() ([]string, []string) {
 				} else {
 					duplicatesSameVersion = append(duplicatesSameVersion, key)
 				}
-				if showVersions {
+				if globalConfig.Versions {
 					if len(uniqueVersions) > 1 {
 						fmt.Print("The package ")
 						yellow.Print(key)

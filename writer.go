@@ -9,8 +9,6 @@ import (
 
 var logs = make(chan string, 100)
 
-var logging bool
-
 const DEPCHECK_DIR = ".depp"
 
 var loggerWg sync.WaitGroup
@@ -54,7 +52,7 @@ func removeDirectory(noLog bool) {
 
 func writeLogsToFile() {
 
-	if logging {
+	if globalConfig.Log {
 		fmt.Println("Will be logging output to .depcheck.log")
 		// open output file
 		fo, err := os.Create(DEPCHECK_DIR + "/.depcheck.log")
