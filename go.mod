@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.2
+	github.com/bradleyfalzon/ghinstallation/v2 v2.0.3
 	github.com/cryogenicplanet/mdopen v1.1.4
 	github.com/evanw/esbuild v0.13.12
 	github.com/fatih/color v1.13.0

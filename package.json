@@ -1,6 +1,6 @@
 {
   "name": "depp-installer",
-  "version": "0.0.7-change-pr-number-env",
+  "version": "0.0.8-serverless",
   "description": " A fast unused and duplicate dependency checker ",
   "repository": {
     "type": "git",
