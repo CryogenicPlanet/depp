@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/google/go-github/v39/github"
@@ -28,7 +29,7 @@ type Issue struct {
 //  Type for this payload are defined here
 //  https://github.com/actions/toolkit/blob/e2eeb0a784f4067a75f0c6cd2cc9703f3cbc7744/packages/github/src/interfaces.ts#L15
 type Payload struct {
-	Issue       Issue `json:"issue"`
+	Issues      Issue `json:"issues"`
 	PullRequest Issue `json:"pull_request"`
 }
 
@@ -114,30 +115,18 @@ func setGithubRepoFromEnv() {
 }
 
 func setIssueNumberFromEnv() {
-	eventPath := os.Getenv("GITHUB_EVENT_PATH")
+	prNumber := os.Getenv("PR_NUMBER")
 
-	if eventPath == "" {
-		panic("ENV GITHUB_EVENT_PATH not found, do not use -ci in local environment")
+	if prNumber == "" {
+		panic("ENV PR_NUMBER not set, please set ENV PR_NUMBER when using -ci")
 	}
 
-	if _, err := os.Stat(eventPath); err != nil {
-		payloadBytes, err := ioutil.ReadFile(eventPath)
-
-		if err != nil {
-			fmt.Println("File ", eventPath, " not found, do not use -ci in local environment")
-			os.Exit(1)
-		}
-
-		payload := Payload{}
-
-		json.Unmarshal(payloadBytes, &payload)
-
-		issueNumber := payload.Issue.Number
-
-		if issueNumber == 0 {
-			issueNumber = payload.PullRequest.Number
-		}
-
-		issue = issueNumber
+	no, err := strconv.Atoi(prNumber)
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+		os.Exit(2)
 	}
+	issue = no
+
 }
