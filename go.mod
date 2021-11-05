@@ -1,4 +1,4 @@
-module github.com/CryogenicPlanet/depp
+module github.com/cryogenicPlanet/depp
 
 go 1.17
 
