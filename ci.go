@@ -28,7 +28,7 @@ type Issue struct {
 //  Type for this payload are defined here
 //  https://github.com/actions/toolkit/blob/e2eeb0a784f4067a75f0c6cd2cc9703f3cbc7744/packages/github/src/interfaces.ts#L15
 type Payload struct {
-	Issue       Issue `json:"issue"`
+	Issues      Issue `json:"issues"`
 	PullRequest Issue `json:"pull_request"`
 }
 
@@ -132,7 +132,9 @@ func setIssueNumberFromEnv() {
 
 		json.Unmarshal(payloadBytes, &payload)
 
-		issueNumber := payload.Issue.Number
+		fmt.Printf("Payload %+v\n", payload)
+
+		issueNumber := payload.Issues.Number
 
 		if issueNumber == 0 {
 			issueNumber = payload.PullRequest.Number
