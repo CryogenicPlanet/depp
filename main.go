@@ -389,9 +389,22 @@ func depcheck() {
 
 	openHtml()
 
+	deployUrl := ""
+
+	if netlifyToken != "" {
+		deployUrl = deployToNetlify()
+		fmt.Print("Deployed URL: ")
+		color.New(color.FgGreen).Println(deployUrl)
+	}
+
+	if ciMode {
+		makePrComment(deployUrl)
+	}
+
 	// Auto deletes the folder by default
 	// The folder is used to create the html report everytime
 	if !globalConfig.Log && !globalConfig.Report && !esbuildWrite && !hasConfig && !saveConfig {
+
 		removeDirectory(true)
 	}
 
@@ -409,6 +422,15 @@ var externals cli.StringSlice
 var ignoreNameSpaces cli.StringSlice
 
 func main() {
+	netlifyPat := os.Getenv("NETLIFY_TOKEN")
+	if netlifyToken == "" {
+		netlifyToken = netlifyPat
+	}
+
+	githubPat := os.Getenv("GITHUB_TOKEN")
+
+	githubToken = githubPat
+
 	app := createCliApp()
 
 	err := app.Run(os.Args)

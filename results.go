@@ -10,8 +10,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/cryogenicplanet/mdopen"
 	"github.com/fatih/color"
-	"github.com/romanyx/mdopen"
 )
 
 func checkIgnoredNameSpace(module string) bool {
@@ -196,6 +196,7 @@ func generateReport() {
 	for line := range reportLines {
 		// fmt.Println("Writing", line, "to report")
 		_, err := datawriter.WriteString(line + "\n")
+		markdownString = markdownString + line + "\n"
 		check(err)
 		reportWg.Done()
 	}
@@ -226,14 +227,18 @@ func openHtml() {
 		// }
 
 		opnr := mdopen.New()
-		if err := opnr.Open(reader); err != nil {
+
+		filePath, err := opnr.Open(reader)
+		if err != nil {
 			log.Fatal(err)
 		}
-		// err = browser.OpenURL(DEPCHECK_DIR + "/report.html")
 
-		// if err != nil {
-		// 	panic(err)
-		// }
+		err = MoveFile(filePath, DEPCHECK_DIR+"/index.html")
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
 	}
 
 }

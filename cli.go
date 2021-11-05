@@ -50,15 +50,8 @@ func createCliApp() cli.App {
 			},
 		},
 		{
-			Name:    "markdown",
-			Aliases: []string{"md"},
-			Action: func(c *cli.Context) error {
-				markdownAst()
-				return nil
-			},
-		},
-		{
 			Name:    "deploy",
+			Usage:   "Automatically deploy your report to netlify",
 			Aliases: []string{"d"},
 			Action: func(c *cli.Context) error {
 				deployToNetlify()
@@ -69,7 +62,7 @@ func createCliApp() cli.App {
 					Name:        "token",
 					Required:    true,
 					Usage:       "Netlify PAT",
-					Destination: &apiToken,
+					Destination: &netlifyToken,
 				},
 			},
 		},
@@ -156,6 +149,16 @@ func createCliApp() cli.App {
 			Value:       false,
 			Destination: &saveConfig,
 		},
+		&cli.BoolFlag{
+			Name:        "ci",
+			Usage:       "Run in github actions ci mode",
+			Destination: &ciMode,
+		},
+		&cli.StringFlag{
+			Name:        "deploy",
+			Usage:       "Will automatically deploy report to netlify",
+			Destination: &netlifyToken,
+		},
 	}
 
 	loadConfigFromFile()
@@ -166,6 +169,7 @@ func createCliApp() cli.App {
 		Usage:                "Find un used packages fast",
 		Flags:                flags,
 		Action: func(c *cli.Context) error {
+
 			depcheck()
 			return nil
 		},
