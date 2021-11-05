@@ -1,6 +1,6 @@
 {
   "name": "depp-installer",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": " A fast unused and duplicate dependency checker ",
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   "scripts": {
     "postinstall": "node dist/postinstall.js install",
     "preuninstall": "node dist/postinstall.js uninstall",
-    "build": "esbuild scripts/--outdir=dist/ --platform=node --format=cjs",
+    "build": "esbuild scripts/postinstall.ts --outdir=dist/ --platform=node --format=cjs",
     "prepare": "pnpm build"
   },
   "goBinary": {
