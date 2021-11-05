@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/google/go-github/v39/github"
@@ -114,34 +115,18 @@ func setGithubRepoFromEnv() {
 }
 
 func setIssueNumberFromEnv() {
-	eventPath := os.Getenv("GITHUB_EVENT_PATH")
+	prNumber := os.Getenv("PR_NUMBER")
 
-	if eventPath == "" {
-		panic("ENV GITHUB_EVENT_PATH not found, do not use -ci in local environment")
+	if prNumber == "" {
+		panic("ENV PR_NUMBER not set, please set ENV PR_NUMBER when using -ci")
 	}
 
-	if _, err := os.Stat(eventPath); err != nil {
-		payloadBytes, err := ioutil.ReadFile(eventPath)
-
-		if err != nil {
-			fmt.Println("File ", eventPath, " not found, do not use -ci in local environment")
-			os.Exit(1)
-		}
-
-		payload := Payload{}
-
-		json.Unmarshal(payloadBytes, &payload)
-
-		fmt.Printf("Payload %+v\n", payload)
-
-		issueNumber := payload.Issues.Number
-
-		if issueNumber == 0 {
-			issueNumber = payload.PullRequest.Number
-		}
-
-		issue = issueNumber
-	} else {
-		fmt.Println("[Error] No File found at GITHUB_EVENT_PATH", eventPath)
+	no, err := strconv.Atoi(prNumber)
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+		os.Exit(2)
 	}
+	issue = no
+
 }
