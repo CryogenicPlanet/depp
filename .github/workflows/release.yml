@@ -28,13 +28,12 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
   release-npm:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Setup node
         uses: actions/setup-node@v2
         with:
@@ -52,7 +51,7 @@ jobs:
       - name: Install pnpm
         run: curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm@6
       - run: pnpm install --ignore-scripts
-      - run: pnpm publish
+      - run:  pnpm publish  --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
   test-installer:
