@@ -24,6 +24,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintln(w, "Could not parse issue number")
+		return
 	}
 
 	token, err := shared.GetInstallationToken(owner)
@@ -32,6 +33,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, err)
+		return
+
 	}
 
 	tokenCtx := context.Background()
@@ -49,6 +52,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Could not get issue data")
+		return
+
 	}
 
 	link, err := url.Parse(issueData.GetCommentsURL())
@@ -58,6 +63,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Could not get parse comment url")
+		return
+
 	}
 
 	response, err := tokenClient.BareDo(tokenCtx, &http.Request{URL: link})
@@ -66,6 +73,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Could not get comments")
+		return
+
 	}
 
 	// issue, _, err := client.Issues.Get(tokenCtx, "cryogenicplanet", "cryogenicplanet.github.io", 49)
@@ -78,6 +87,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Could not read response")
+		return
 	}
 
 	headers := response.Header.Clone()

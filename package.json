@@ -1,6 +1,6 @@
 {
   "name": "depp-installer",
-  "version": "0.0.8",
+  "version": "0.0.8-patch-request-handling",
   "description": " A fast unused and duplicate dependency checker ",
   "repository": {
     "type": "git",
