@@ -230,7 +230,7 @@ func openHtml() {
 
 		filePath, err := opnr.Open(reader)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("[WARN] could not open browser")
 		}
 
 		err = MoveFile(filePath, DEPCHECK_DIR+"/index.html")
