@@ -141,5 +141,7 @@ func setIssueNumberFromEnv() {
 		}
 
 		issue = issueNumber
+	} else {
+		fmt.Println("[Error] No File found at GITHUB_EVENT_PATH", eventPath)
 	}
 }
