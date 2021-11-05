@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 	"sync"
@@ -230,13 +229,15 @@ func openHtml() {
 
 		filePath, err := opnr.Open(reader)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("[WARN] could not open browser")
 		}
+
+		fmt.Println("File path is", filePath)
 
 		err = MoveFile(filePath, DEPCHECK_DIR+"/index.html")
 
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("[WARN] Error moving file")
 		}
 
 	}
