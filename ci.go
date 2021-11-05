@@ -55,7 +55,7 @@ func checkPrComments() int64 {
 	client := github.NewClient(nil)
 	ctx := context.Background()
 
-	var response *github.Response
+	var response *http.Response
 
 	if checkIfPublic() {
 		// Public repo no need to proxy
@@ -87,7 +87,7 @@ func checkPrComments() int64 {
 
 		check(err)
 
-		response, err = client.BareDo(ctx, &http.Request{Method: "GET", URL: link})
+		response, err = http.Get(link.String())
 
 		check(err)
 	}
@@ -151,11 +151,27 @@ func makePrComment(deployUrl string) {
 
 		check(err)
 
-		_, err = client.BareDo(ctx, &http.Request{Method: "GET", URL: link})
+		resp, err := http.Get(link.String())
 
-		check(err)
+		if err != nil {
+			fmt.Println("[WARN]", err)
+		}
+
+		if resp.StatusCode > 300 {
+			fmt.Println("Failed response", resp.Status, resp)
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Println("[Error]", err)
+			}
+
+			fmt.Println("Failed to comment on PR :(", owner, repo, issue)
+
+			panic(string(body))
+		}
 
 	}
+
+	fmt.Println("Commented on PR!", owner, repo, issue)
 
 }
 

@@ -78,6 +78,7 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintln(w, "Could not get create/edit comment", err)
+		return
 	}
 
 	w.WriteHeader(http.StatusAccepted)
