@@ -109,8 +109,8 @@ func checkPrComments() int64 {
 }
 
 func makePrComment(deployUrl string) {
-	// setGithubRepoFromEnv()
-	// setIssueNumberFromEnv()
+	setGithubRepoFromEnv()
+	setIssueNumberFromEnv()
 
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
@@ -162,6 +162,8 @@ func makePrComment(deployUrl string) {
 		}
 
 	}
+
+	fmt.Println("Commented on PR!")
 
 }
 
