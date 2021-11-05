@@ -40,21 +40,57 @@ type IssueComment struct {
 
 const DEEP_REPORT_TITLE = "# Depp Report"
 
-func checkPrComments(client github.Client, ctx context.Context) int64 {
+func checkIfPublic() bool {
+	isPublic := os.Getenv("IS_PUBLIC")
+	if isPublic != "" {
+		// Public repo no need to proxy
 
-	issueData, _, err := client.Issues.Get(ctx, owner, repo, issue)
+		return true
+	}
+	return false
+}
 
-	check(err)
+func checkPrComments() int64 {
 
-	// fmt.Printf("%+v\n", issueData)
+	client := github.NewClient(nil)
+	ctx := context.Background()
 
-	url, err := url.Parse(issueData.GetCommentsURL())
+	var response *github.Response
 
-	check(err)
+	if checkIfPublic() {
+		// Public repo no need to proxy
 
-	response, err := client.BareDo(ctx, &http.Request{Method: "GET", URL: url})
+		issueData, _, err := client.Issues.Get(ctx, owner, repo, issue)
 
-	check(err)
+		check(err)
+
+		issueUrl := issueData.GetCommentsURL()
+
+		link, err := url.Parse(issueUrl)
+
+		check(err)
+
+		client.BareDo(ctx, &http.Request{Method: "GET", URL: link})
+
+	} else {
+
+		query := url.Values{}
+
+		query.Add("repo", repo)
+		query.Add("issue", fmt.Sprint(issue))
+
+		query.Add("owner", owner)
+
+		// fmt.Printf("%+v\n", issueData)
+
+		link, err := url.Parse("https://depp-serverless.vercel.app/api/proxy/issueComments?" + query.Encode())
+
+		check(err)
+
+		response, err = client.BareDo(ctx, &http.Request{Method: "GET", URL: link})
+
+		check(err)
+	}
 
 	body, err := ioutil.ReadAll(response.Body)
 
@@ -76,8 +112,6 @@ func makePrComment(deployUrl string) {
 	setGithubRepoFromEnv()
 	setIssueNumberFromEnv()
 
-	fmt.Println("Git env is", owner, repo, issue)
-
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},
@@ -88,15 +122,39 @@ func makePrComment(deployUrl string) {
 
 	body := DEEP_REPORT_TITLE + "\n  Report Deploy URL is " + deployUrl + "\n \n" + markdownString
 
-	commentId := checkPrComments(*client, ctx)
+	commentId := checkPrComments()
 
-	if commentId == -1 {
-		_, _, err := client.Issues.CreateComment(ctx, owner, repo, issue, &github.IssueComment{Body: &body})
-		check(err)
+	if checkIfPublic() {
 
+		if commentId == -1 {
+			_, _, err := client.Issues.CreateComment(ctx, owner, repo, issue, &github.IssueComment{Body: &body})
+			check(err)
+
+		} else {
+			_, _, err := client.Issues.EditComment(ctx, owner, repo, commentId, &github.IssueComment{Body: &body})
+			check(err)
+		}
 	} else {
-		_, _, err := client.Issues.EditComment(ctx, owner, repo, commentId, &github.IssueComment{Body: &body})
+
+		query := url.Values{}
+
+		query.Add("repo", repo)
+		if commentId == -1 {
+			query.Add("issue", fmt.Sprint(issue))
+		} else {
+			query.Add("commentId", fmt.Sprint(commentId))
+		}
+		query.Add("owner", owner)
+		query.Add("commentBody", body)
+
+		link, err := url.Parse("https://depp-serverless.vercel.app/api/proxy/updateComment?" + query.Encode())
+
 		check(err)
+
+		_, err = client.BareDo(ctx, &http.Request{Method: "GET", URL: link})
+
+		check(err)
+
 	}
 
 }
