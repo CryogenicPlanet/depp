@@ -159,11 +159,19 @@ func makePrComment(deployUrl string) {
 
 		if resp.StatusCode > 300 {
 			fmt.Println("Failed response", resp.Status, resp)
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Println("[Error]", err)
+			}
+
+			fmt.Println("Failed to comment on PR :(", owner, repo, issue)
+
+			panic(string(body))
 		}
 
 	}
 
-	fmt.Println("Commented on PR!")
+	fmt.Println("Commented on PR!", owner, repo, issue)
 
 }
 
