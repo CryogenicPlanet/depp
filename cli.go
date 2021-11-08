@@ -159,6 +159,12 @@ func createCliApp() cli.App {
 			Usage:       "Will automatically deploy report to netlify",
 			Destination: &netlifyToken,
 		},
+		&cli.BoolFlag{
+			Name:        "browser",
+			Usage:       "Will use esbuild browser platform (by default it uses node platform)",
+			Value:       false,
+			Destination: &globalConfig.BrowserPlatform,
+		},
 	}
 
 	loadConfigFromFile()

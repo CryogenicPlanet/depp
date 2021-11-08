@@ -352,6 +352,12 @@ func depcheck() {
 
 	setDeps(packageJsonPaths)
 
+	platform := api.PlatformNode
+
+	if globalConfig.BrowserPlatform {
+		platform = api.PlatformBrowser
+	}
+
 	result := api.Build(api.BuildOptions{
 		EntryPoints: sourcePaths,
 		// EntryPoints: []string{"test/monorepo/packages/package-b/src/App.tsx"},
@@ -363,6 +369,7 @@ func depcheck() {
 		Plugins:  []api.Plugin{depcheckPlugin},
 		External: getExternals(),
 		Metafile: true,
+		Platform: platform,
 	})
 
 	if len(result.Errors) > 0 {

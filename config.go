@@ -13,7 +13,7 @@ import (
 )
 
 func getExternals() []string {
-	defaultExternals := []string{"path", "fs", "crypto", "os", "http", "child_process", "querystring", "readline", "tls", "assert", "buffer", "url", "net", "buffer", "tty", "util", "stream", "events", "zlib", "https", "worker_threads", "module", "http2", "dns"}
+	defaultExternals := []string{}
 
 	cliExternals := externals.Value()
 
@@ -34,6 +34,7 @@ type ConfigJSON struct {
 	DevDependencies   bool     `json:"dev"`
 	Externals         []string `json:"externals"`
 	IgnoredNamespaces []string `json:"ignore-namespaces"`
+	BrowserPlatform   bool     `json:"browser-platform"`
 }
 
 func setupConfig() {
