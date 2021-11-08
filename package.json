@@ -1,6 +1,6 @@
 {
   "name": "depp-installer",
-  "version": "0.0.8-ci-error-handling",
+  "version": "0.0.9",
   "description": " A fast unused and duplicate dependency checker ",
   "repository": {
     "type": "git",
