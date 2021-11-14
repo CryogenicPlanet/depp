@@ -72,24 +72,38 @@ You can save your `depp` config and not have to run it with flags every time, th
 # Initialize config
 depp init 
 
-➜ depp config --help
+➜ depp --help                                                
 NAME:
-   depp config - A command to handle config
+   depp - Find un used packages fast
 
 USAGE:
-   depp config command [command options] [arguments...]
+   depp [global options] command [command options] [arguments...]
 
 COMMANDS:
-   show                Show current configuration
-   path                Set the root path
-   versions            Set versions config
-   js                  Set js config
-   externals           Handle external config
-   ignored-namespaces  Handle ignored namespace config
-   help, h             Shows a list of commands or help for one command
+   clean      Cleans all output files
+   show       Shows previous report
+   deploy, d  Automatically deploy your report to netlify
+   config     A command to handle config
+   init       Initialize project
+   help, h    Shows a list of commands or help for one command
 
-OPTIONS:
-   --help, -h  show help (default: false)
+GLOBAL OPTIONS:
+   --dev, -d                              Enable dev dependencies (default: false)
+   --js, -j                               Enable js source files (default: false)
+   --path value, -p value                 Overwrite root directory
+   --log, -l                              Will write logs to .depcheck.log (default: false)
+   --source value, -s value               Overwrite default sources
+   --report, -r                           Generate report file (default: false)
+   --show-versions, -v                    Show conflicting versions (default: false)
+   --write-output-files, -w               This will write the esbuild output files. (default: false)
+   --externals value, -e value            Pass custom externals using this flag
+   --ignore-namespaces value, --in value  Pass namespace (@monorepo) to be ignored
+   --no-open, --no                        Flag to prevent auto opening report in browser (default: false)
+   --save-config, --sc                    Flag to automatically save config from other flags (default: false)
+   --ci                                   Run in github actions ci mode (default: false)
+   --deploy value                         Will automatically deploy report to netlify
+   --browser                              Will use esbuild browser platform (by default it uses node platform) (default: false)
+   --ignore-path value, --ip value        A glob pattern of files to be ignored
 ```
 
 ## CI
