@@ -84,6 +84,7 @@ func Glob(pattern string) ([]string, error) {
 		return filepath.Glob(pattern)
 	}
 	ingored := []string{"node_modules", "dist", ".next"}
+	ingored = append(ingored, globalConfig.IgnoredPaths...)
 
 	return handleGlobs(strings.Split(pattern, "**"), ingored)
 }
@@ -109,18 +110,18 @@ func check(err error) {
 func MoveFile(sourcePath, destPath string) error {
 	inputFile, err := os.Open(sourcePath)
 	if err != nil {
-		return fmt.Errorf("Couldn't open source file: %s", err)
+		return fmt.Errorf("couldn't open source file: %s", err)
 	}
 	outputFile, err := os.Create(destPath)
 	if err != nil {
 		inputFile.Close()
-		return fmt.Errorf("Couldn't open dest file: %s", err)
+		return fmt.Errorf("couldn't open dest file: %s", err)
 	}
 	defer outputFile.Close()
 	_, err = io.Copy(outputFile, inputFile)
 	inputFile.Close()
 	if err != nil {
-		return fmt.Errorf("Writing to output file failed: %s", err)
+		return fmt.Errorf("writing to output file failed: %s", err)
 	}
 	// // The copy was successful, so now delete the original file
 	// err = os.Remove(sourcePath)
