@@ -14,7 +14,7 @@ import (
 )
 
 func checkIgnoredNameSpace(module string) bool {
-	namespaces := ignoreNameSpaces.Value()
+	namespaces := globalConfig.IgnoredNamespaces
 
 	if len(namespaces) > 0 {
 		for _, name := range namespaces {

@@ -12,13 +12,12 @@ import (
 
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/fatih/color"
-	"github.com/urfave/cli/v2"
 )
 
 type PackageJSON struct {
-	Name            string            `json: "name, omitempty"`
-	Dependencies    map[string]string `json: "dependencies, omitempty"`
-	DevDependencies map[string]string `json "devDependencies, omitempty"`
+	Name            string            `json:"name"`
+	Dependencies    map[string]string `json:"dependencies"`
+	DevDependencies map[string]string `json:"devDependencies"`
 }
 
 var depcheckPlugin = api.Plugin{
@@ -64,37 +63,6 @@ var depcheckPlugin = api.Plugin{
 			func(args api.OnResolveArgs) (api.OnResolveResult, error) {
 
 				fileLog("Resolved", args, args.Kind)
-
-				// if strings.Contains(args.Importer, "node_modules") {
-
-				// 	importer := args.Importer
-				// 	lastNM := strings.LastIndex(importer, "node_module")
-
-				// 	if lastNM == -1 {
-				// 		color.New(color.FgYellow).Println("[WARN] Error finding node_module in require call, skipping", importer)
-				// 		return api.OnResolveResult{}, nil
-				// 	}
-
-				// 	str := importer[lastNM:]
-
-				// 	splitBySlash := strings.Split(str, "/")
-				// 	// fmt.Println(importer, lastNM, str, splitBySlash)
-				// 	moduleName := splitBySlash[1]
-
-				// 	if strings.Contains(moduleName, "@") {
-				// 		// using a @x/y package
-				// 		// Example @babel/core
-				// 		moduleName += "/" + splitBySlash[2]
-				// 	}
-
-				// 	checkModule(moduleName)
-
-				// 	// fmt.Println("Skipping", args.Importer)
-				// 	fileLog("Skipping", args)
-				// 	return api.OnResolveResult{
-				// 		External: true,
-				// 	}, nil
-				// }
 
 				if args.Kind == api.ResolveJSImportStatement {
 					// import statement
@@ -361,19 +329,26 @@ func depcheck() {
 	result := api.Build(api.BuildOptions{
 		EntryPoints: sourcePaths,
 		// EntryPoints: []string{"test/monorepo/packages/package-b/src/App.tsx"},
-		Target:   api.ES2016,
+		Target:   api.ESNext,
 		Bundle:   true,
 		Write:    esbuildWrite,
 		Format:   api.FormatESModule,
 		Outdir:   DEPCHECK_DIR + "/dist",
 		Plugins:  []api.Plugin{depcheckPlugin},
-		External: getExternals(),
+		External: globalConfig.Externals,
 		Metafile: true,
 		Platform: platform,
+		Loader: map[string]api.Loader{
+			".js": api.LoaderJSX,
+		},
 	})
 
 	if len(result.Errors) > 0 {
-		fmt.Println("Errors", result.Errors)
+
+		for _, err := range result.Errors {
+			fmt.Println("Error", err.Text, err.Location.File, err.Location.Line)
+			fileLog("Error", err.Text, err.Location.File, err.Location.Line, err)
+		}
 
 		os.Exit(1)
 	}
@@ -421,12 +396,6 @@ func depcheck() {
 
 	close(modules)
 }
-
-var esbuildWrite bool
-var noOpen bool
-
-var externals cli.StringSlice
-var ignoreNameSpaces cli.StringSlice
 
 func main() {
 	netlifyPat := os.Getenv("NETLIFY_TOKEN")

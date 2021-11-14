@@ -10,7 +10,6 @@ require (
 	github.com/fatih/color v1.13.0
 	github.com/go-openapi/runtime v0.21.0
 	github.com/go-openapi/strfmt v0.21.0
-	github.com/gomarkdown/markdown v0.0.0-20210918233619-6c1113f12c4a
 	github.com/google/go-github/v39 v39.2.0
 	github.com/netlify/open-api/v2 v2.5.2
 	github.com/tidwall/gjson v1.11.0
@@ -41,6 +40,7 @@ require (
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/golang-jwt/jwt/v4 v4.1.0 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/gomarkdown/markdown v0.0.0-20210918233619-6c1113f12c4a // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect

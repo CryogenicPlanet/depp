@@ -53,9 +53,9 @@ func removeDirectory(noLog bool) {
 func writeLogsToFile() {
 
 	if globalConfig.Log {
-		fmt.Println("Will be logging output to .depcheck.log")
+		fmt.Println("Will be logging output to " + DEPCHECK_DIR + "/debug.log")
 		// open output file
-		fo, err := os.Create(DEPCHECK_DIR + "/.depcheck.log")
+		fo, err := os.Create(DEPCHECK_DIR + "/debug.log")
 		fileOps.Add(1)
 		if err != nil {
 			panic(err)
