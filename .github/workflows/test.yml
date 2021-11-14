@@ -9,6 +9,17 @@ jobs:
       strategy:
           matrix:
             os: [macos-latest, ubuntu-latest, windows-latest]
+            settings:
+               -  host: macos-latest
+                  target: aarch64-apple-darwin
+                  build: |
+                    sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
+                    export CC=$(xcrun -f clang);
+                    export CXX=$(xcrun -f clang++);
+                    SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
+                    export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
+                    yarn build --target=aarch64-apple-darwin
+                    strip -x *.node
       steps:
         - name: Install Node.js, NPM and Yarn
           uses: actions/setup-node@v1
