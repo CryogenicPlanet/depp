@@ -14,6 +14,7 @@ const ARCH_MAPPING: { [name: string]: string } = {
   ia32: "386",
   x64: "x86_64",
   arm: "arm",
+  arm64: "arm64"
 };
 
 
