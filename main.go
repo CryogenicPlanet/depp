@@ -356,7 +356,7 @@ func depcheck() {
 
 	moduleWg.Wait()
 
-	reportLog("# Report for - ", rootPath)
+	reportLog("## Report for - ", rootPath)
 
 	computeResults()
 

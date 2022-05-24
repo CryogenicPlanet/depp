@@ -67,8 +67,6 @@ func computeResults() {
 
 	yellow.Println(strings.Join(unusedPackages, ", "))
 
-	unusedPackageMarkdownTable(unusedPackages)
-
 	duplicatesDiffVersions, duplicatesSameVersion := findDuplicates()
 
 	unusedTypePackage := checkAtTypesPackages()
@@ -88,6 +86,8 @@ func computeResults() {
 	} else {
 		green.Println("There are no duplicate packages")
 	}
+
+	unusedPackageMarkdownTable(unusedPackages)
 
 	unusedTypesPackagesMarkdownTable(unusedTypePackage)
 
@@ -125,9 +125,9 @@ func findDuplicates() ([]string, []string) {
 	}
 	reportLog("## Duplicate packages")
 
-	sameVersionMarkdownTable(duplicatesSameVersion)
-
 	multipleVersionsMarkdownTable(duplicatesDiffVersionName, duplicatesDiffVersions)
+
+	sameVersionMarkdownTable(duplicatesSameVersion)
 
 	return duplicatesDiffVersionName, duplicatesSameVersion
 }
@@ -157,27 +157,28 @@ func unusedPackageMarkdownTable(packages []string) {
 func multipleVersionsMarkdownTable(packages []string, packageVersions [][]string) {
 	if len(packages) > 0 {
 		reportLog("### Packages with Multiple Versions")
-		reportLog("| Package  | Version | Used By")
+		reportLog("| Package  | Version | Used By |")
 		reportLog("| ----------- | ----------- | ----------- |")
 		for i := range packages {
 			name := packages[i]
 			versions := packageVersions[i]
 			reportLog("| ", name, " | `", strings.Join(versions, ","), "` | `", strings.Join(depsName[name], ", "), "` | ")
 		}
-		reportLog("---")
 	}
 }
 
 func sameVersionMarkdownTable(packages []string) {
 	if len(packages) > 0 {
-		reportLog("### Packages with Same Versions")
+		reportLog("<details>")
+		reportLog("<summary>Packages with Same Versions</summary>\n")
 		reportLog("| Package  | Used By |")
 		reportLog("| ----------- | ----------- |")
 		for _, val := range packages {
 			reportLog("| ", val, " | `", strings.Join(depsName[val], ", "), "` | ")
 		}
-		reportLog("---")
+		reportLog("</details>")
 	}
+	reportLog("---")
 }
 
 func generateReport() {
