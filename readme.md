@@ -161,4 +161,6 @@ This is not been extensively tested and might have some short comings, it may no
 ## Acknowledgement
 
 
+> Credits to [@zack_overflow](https://github.com/zackradisic) for the amazing cover photo
+
 This is built upon the excellent work down by [@evanw](https://github.com/evanw/) on `esbuild` and uses `esbuild` under the hood
